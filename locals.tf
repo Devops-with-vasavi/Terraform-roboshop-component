@@ -1,7 +1,7 @@
 locals {
   ami_id = data.aws_ami.joindevops
   sg_id = local.sg_id
-  private_subnet_id = spilt(",", data.aws_ssm_parameter.private_subnet_ids.value)[0]
+  private_subnet_id = split(",", data.aws_ssm_parameter.private_subnet_ids.value)[0]
   common_name = "${var.project}-${var.environment}-$(var.component)"
   vpc_id = data.aws_ssm_parameter.vpc_id.value
   frontend_alb_listener_arn =  data.aws_ssm_parameter.frontend_alb_listener_arn.value
