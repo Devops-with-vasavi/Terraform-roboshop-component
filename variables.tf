@@ -13,7 +13,7 @@ variable "app_version" {
 
 
 variable "domain_name" {
-    type = string
+    type = "mydaws90.online"
 }
 
 
