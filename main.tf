@@ -74,7 +74,8 @@ resource "aws_launch_template" "main" {
     tags = merge(
        {
       Name = "${local.common_name}-${var.app_version}-${aws_instance.main.id}"
-       }
+       },
+       local.common_tags
     )
   }
 
@@ -84,7 +85,8 @@ resource "aws_launch_template" "main" {
     tags = merge( 
       {
       Name = "${local.common_name}-${var.app_version}-${aws_instance.main.id}"
-      }
+      },
+      local.common_tags
     )
   }
 
@@ -92,7 +94,8 @@ resource "aws_launch_template" "main" {
     tags = merge(
       {
       Name = "${local.common_name}-${var.app_version}-${aws_instance.main.id}"
-      }
+      },
+      local.common_tags
     )
   
 }
@@ -101,7 +104,7 @@ resource "aws_launch_template" "main" {
 resource "aws_lb_target_group" "main" {
   name     = "${local.common_name}"
   vpc_id   = local.vpc_id
-  port = var.component == "frontend" ? "80": "8080"
+  port = var.component == "frontend" ? "80" : "8080"
   protocol = "HTTP"
   deregistration_delay = 30
   health_check {
@@ -109,7 +112,7 @@ resource "aws_lb_target_group" "main" {
     interval = 10
     matcher = "200-299"
     path = var.component == "frontend" ? "/" : "/health"
-    port = var.component == "frontend" ? "80": "8080"
+    port = var.component == "frontend" ? "80" : "8080"
     protocol = "HTTP"
     timeout = 5
     unhealthy_threshold = 2
@@ -131,6 +134,7 @@ resource "aws_autoscaling_group" "main" {
     id      = aws_launch_template.main.id
     version = "$Latest"
   }
+  
   target_group_arns = [aws_lb_target_group.main.arn]  # autoscaling launches into specific target group
   vpc_zone_identifier       = [local.private_subnet_id]
   instance_refresh {
