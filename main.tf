@@ -146,7 +146,7 @@ resource "aws_autoscaling_group" "main" {
   }
 
   dynamic "tag"{
-    for_each =  merge (
+    for_each = merge(
       {
      Name = "${local.common_name}"
       },
@@ -156,8 +156,8 @@ resource "aws_autoscaling_group" "main" {
         key                 = tag.key
         value               = tag.value
         propagate_at_launch = true
-      }
-   }
+    }
+  }
   timeouts {
     delete = "15m"
   }
@@ -168,6 +168,7 @@ resource "aws_autoscaling_policy" "main" {
   name                   = "${local.common_name}"
   autoscaling_group_name = aws_autoscaling_group.main.name
   policy_type = "TargetTrackingScaling"
+  estimated_instance_warmup = 120
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
